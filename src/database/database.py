@@ -2,6 +2,8 @@ from contextlib import contextmanager
 import os
 import sqlite3
 
+from pydantic import BaseModel
+
 
 class Database:
 
@@ -42,3 +44,16 @@ class Database:
             raise
         finally:
             conn.close()
+
+    def fetchAll(self, cursor : sqlite3.Cursor):
+        cols = [col[0] for col in cursor.description]
+        rows = cursor.fetchall()
+        return [dict(zip(cols, row)) for row in rows]
+
+    def fetchOne(self, cursor: sqlite3.Cursor):
+        cols = [col[0] for col in cursor.description]
+        row = cursor.fetchone()
+        return dict(zip(cols, row))
+
+    def hydrate(self, model: type[BaseModel], rows: list[dict] | dict):
+        return [model.model_validate(row) for row in rows]
