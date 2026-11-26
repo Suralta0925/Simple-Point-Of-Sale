@@ -1,5 +1,7 @@
-import mariadb
 from contextlib import contextmanager
+import os
+import sqlite3
+
 
 class Database:
 
@@ -12,22 +14,27 @@ class Database:
 
     def __init__(self):
         if hasattr(self, '_initialized'): return
-        self._pool = mariadb.ConnectionPool(
-            user='pos_user',
-            password='sana_pumasar_yana_na_second_sem',
-            host='localhost',
-            port=3306,
-            pool_name='pos_pool',
-            pool_size=5,
-            database='posDB'
-        )
+        folder = os.path.dirname(os.path.abspath(__file__))
+        self._db_path = os.path.join(folder, 'posDB.db')
+        sql_path = os.path.join(folder, 'posDB.sql')
+
+        first_time = not os.path.exists(self._db_path)
+
+        if first_time:
+            conn = sqlite3.connect(self._db_path)
+            with open(sql_path, 'r', encoding='utf8') as f:
+                conn.executescript(f.read())
+            conn.commit()
+            conn.close()
+
         self._initialized = True
 
     @contextmanager
     def transaction(self):
-        conn = self._pool.get_connection()
+        conn  = sqlite3.connect(self._db_path)
+        conn.execute('PRAGMA foreign_keys = ON')
+        conn.row_factory = sqlite3.Row
         try:
-            conn.begin()
             yield conn
             conn.commit()
         except BaseException:
