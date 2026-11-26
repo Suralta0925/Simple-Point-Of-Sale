@@ -34,5 +34,14 @@ class UserRepo(Repository):
             return user
         finally:
             cursor.close()
+	
+	def readAll(self):
+		cursor = self._conn.cursor()
+		try:
+			cursor.execute('select username, password, first_name, last_name from users')
+			users = user.fetchall()
+			return users
+		finally:
+			cursor.close()
 
 
