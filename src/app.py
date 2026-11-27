@@ -6,6 +6,7 @@ from repository import UserRepo
 db = Database()
 with db.transaction() as conn:
     repo = UserRepo(conn, db)
+    print(repo.readOne('Cr4zyC0d3rz'))
     print(repo.readAll())
 
 

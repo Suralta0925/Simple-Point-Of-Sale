@@ -50,10 +50,10 @@ class Database:
         rows = cursor.fetchall()
         return [dict(zip(cols, row)) for row in rows]
 
-    def fetchOne(self, cursor: sqlite3.Cursor):
+    def fetchOne(self, cursor: sqlite3.Cursor) -> 'list[dict]':
         cols = [col[0] for col in cursor.description]
         row = cursor.fetchone()
-        return dict(zip(cols, row))
+        return [dict(zip(cols, row))] if row else None
 
     def hydrate(self, model: type[BaseModel], rows: list[dict] | dict):
-        return [model.model_validate(row) for row in rows]
+        return [model.model_validate(row) for row in rows] if rows else None
