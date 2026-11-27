@@ -1,21 +1,33 @@
-from flask import Flask, render_template, url_for
+from tkinter import Tk
 
-from database import Database
-from repository import UserRepo
-
-db = Database()
-with db.transaction() as conn:
-    repo = UserRepo(conn, db)
-    print(repo.readOne('Cr4zyC0d3rz'))
-    print(repo.readAll())
+from core import Session, ScreenManager
+from modules import LoginView
 
 
+class App:
 
-# app = Flask(__name__)
-#
-# @app.route('/')
-# def index():
-#     return render_template('index.html')
-#
-# if __name__ == '__main__':
-#     app.run(debug=True)
+    def __init__(self, root: Tk):
+
+        self.root = root
+        self.root.geometry("1300x900")
+
+
+
+
+
+
+        self.session = Session()
+
+        self.router = ScreenManager(root)
+
+        self.login_screen = LoginView
+
+        self.show_screen(self.login_screen)
+
+    def show_screen(self, screen):
+        self.router.show(lambda root : screen(self))
+
+if __name__ == "__main__":
+    root = Tk()
+    app = App(root)
+    root.mainloop()
