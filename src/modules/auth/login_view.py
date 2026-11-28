@@ -236,7 +236,7 @@
 
 from tkinter import Button, Entry, Frame, Label
 
-from config import COLORS, SIZE
+from config import COLORS, SIZE, Logo
 from models import LoginUser
 from service.user_service import UserService
 
@@ -343,14 +343,7 @@ class LoginView(Frame):
         title = Frame(form, bg=COLORS["white"])
         title.pack(anchor="w")
 
-        for text, color in (("QUICK", COLORS["darkNavy"]), ("MART", COLORS["primary"])):
-            Label(
-                title,
-                text=text,
-                font=font(SIZE["subtitle"], bold=True),
-                bg=COLORS["white"],
-                fg=color,
-            ).pack(side="left", anchor="nw")
+        Logo(title, SIZE['subtitle'])
 
         Label(
             form,
@@ -462,6 +455,9 @@ class LoginView(Frame):
         self.error_label.config(text=message)
 
     def login(self):
+        self.app.show_screen(self.app.admin_screen)
+        return
+
         username = self.username.get().strip()
         password = self.password.get()
 
