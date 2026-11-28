@@ -1,7 +1,7 @@
+from core import Session
 from database import Database
 import bcrypt
 from repository import UserRepo
-from service_response import ServiceResponse
 
 
 from models import UserModel, CreateUser, LoginUser
@@ -24,13 +24,16 @@ class UserService:
                 return 'Unable to create User'
         except BaseException as e:
             return e
+
+
+    def auth_login(self, user_login:LoginUser, session: Session):
         try:
             with self._db.transaction() as conn:
                 repo = UserRepo(conn, self._db)
                 user : UserModel | None= repo.readOne('username', user_login.username)
                 if user is None: return "Invalid Credentials"
                 if user_login.password_hash != user.password_hash: return "Invalid Credentials"
-                return user
+                session.login(user)
         except BaseException as e:
             return e
 

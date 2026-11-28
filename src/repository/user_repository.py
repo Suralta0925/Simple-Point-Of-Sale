@@ -30,8 +30,8 @@ class UserRepo(Repository):
     def readOne(self, column_name, column_data) -> 'UserModel':
         cursor = self._conn.cursor()
         try:
-            cursor.execute("""select user_id, username, password_hash, role_name, first_name, last_name, must_change_password 
-                              from users u inner join role r on u.role_id=r.role_id  where (?)=(?)""", (column_name, column_data,))
+            cursor.execute(f"""select u.user_id, u.username, u.password_hash, r.role_name, u.first_name, u.last_name, u.must_change_password 
+                              from users u inner join roles r on u.role_id=r.role_id  where {column_name}=(?)""", (column_data,))
             row = self._db.fetchOne(cursor)
             user = self._db.hydrate(UserModel, row)
             return user[0] if user else None

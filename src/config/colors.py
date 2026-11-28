@@ -5,5 +5,6 @@ COLORS = {
     'white': "#FFFFFF",
     'lightGray': "#F8FAFC",
     'darkNavy': "#1E293B",
-    'borderGray': "#E2E8F0"
+    'borderGray': "#E2E8F0",
+    'darkerGray': "#1E293B"
 }

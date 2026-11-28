@@ -1,0 +1,1 @@
+from .cashier_view import CashierView
